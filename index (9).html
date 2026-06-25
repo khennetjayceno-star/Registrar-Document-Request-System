@@ -1,0 +1,28 @@
+// Compute claim windows for selected docs
+function getClaimWindows(docCodes) {
+  const byWindow = {};
+  docCodes.forEach(code => {
+    const doc = DOCUMENTS.find(d => d.code === code);
+    if (!doc) return;
+    const w = doc.window || 6;
+    if (!byWindow[w]) byWindow[w] = [];
+    byWindow[w].push(doc.name);
+  });
+  return byWindow;
+}
+
+function renderClaimWindowInfo(docCodes) {
+  const byWindow = getClaimWindows(docCodes);
+  const winNums = Object.keys(byWindow).sort();
+  if (!winNums.length) return '';
+  let html = `<div style="background:var(--blue-light);border:1px solid rgba(11,47,110,0.18);border-radius:9px;padding:14px 16px;">
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:10px;">🪟 Where to Claim Your Documents</div>`;
+  winNums.forEach(w => {
+    html += `<div class="window-list-item">
+      <span class="wl-win">Window ${w}</span>
+      <span class="wl-docs">${byWindow[w].join(', ')}</span>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
